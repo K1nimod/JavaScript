@@ -1,0 +1,29 @@
+.lila{
+    background-color: purple;
+    display: flex;
+    width: 100%;
+    height: 100px;
+}
+.kek{
+    background-color: lightblue;
+    height: 80px;
+    width: 10%;
+    margin: 10px;
+}
+
+.kozep{
+    display: flex;
+    width: 100%;
+    height: 800px;
+}
+.zold{
+    background-color: green;
+    height: 100%;
+    width: 30%;
+}
+
+.sarga{
+    background-color: yellow;
+    height: 100%;
+    width: 70%;
+}    
