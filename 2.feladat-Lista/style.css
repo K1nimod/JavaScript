@@ -1,0 +1,94 @@
+.container-1 {
+    width: 800px;
+    height: 300px;
+    background-color: yellow;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
+.zöld, .sárga, .lila {
+    width: 100px;
+    height: 100px;
+}
+
+.zöld {
+    background-color: green;
+    display: none; 
+}
+
+.sárga {
+    background-color: yellow;
+    display: none; /
+}
+
+.lila {
+    background-color: purple;
+    display: block; 
+}
+
+
+.container-2 {
+    width: 100%;
+    height: 400px;
+    background-color: yellow;
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center;
+}
+
+.container-2 ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.container-2 li {
+    width: 100px;
+    height: 100px;
+    background-color: purple;
+    margin: 10px;
+}
+
+.container-3 {
+    width: 100%;
+    height: 400px;
+    background-color: yellow;
+    display: flex;
+    align-items: center;
+}
+
+.container-3 ul {
+    padding: 0;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.container-3 li {
+    width: 100px;
+    height: 100px;
+    background-color: purple;
+    margin: 200px;
+}
+
+.container-4 {
+    width: 100%;
+    height: 400px;
+    background-color: yellow;
+    display: flex;
+    justify-content: flex-end; 
+    align-items: flex-end; 
+}
+
+.container-4 ul {
+    padding: 0;
+    margin: 0;
+    display: flex; 
+}
+
+.container-4 li {
+    width: 100px;
+    height: 100px;
+    background-color: purple;
+    margin: 10px;
+}
