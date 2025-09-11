@@ -1,0 +1,96 @@
+.nagy1, .nagy2, .nagy3
+{
+    width: 100%;
+    height: 300px;
+    display: flex;
+    
+}
+.nagy1>.zöld
+{
+    background-color: green;
+    width: 33%;
+    height: 300px;
+    
+}
+.nagy1>.sárga
+{
+    background-color: yellow;
+    width: 33%;
+    height: 300px;
+}
+.nagy1>.lila
+{
+    background-color: purple;
+    width: 33%;
+    height: 300px;
+}
+.nagy2>.zöld
+{
+    background-color: green;
+    width: 25%;
+    height: 300px;
+}
+.nagy2>.sárga
+{
+    background-color: yellow;
+    width: 50%;
+    height: 300px;
+}
+.nagy2>.lila
+{
+    background-color: purple;
+    width: 25%;
+    height: 300px;
+}
+.nagy3>.zöld
+{
+    background-color: green;
+    width: 25%;
+    height: 300px;
+    order: 1;
+ 
+}
+.nagy3>.sárga
+{
+    background-color: yellow;
+    width: 50%;
+    height: 300px;
+    
+}
+.nagy3>.lila
+{
+    background-color: purple;
+    width: 25%;
+    height: 300px;
+    order:-1;
+    
+}
+.nagy4
+{
+    height: 300px;
+    flex-direction: column;
+}
+.nagy4>.zöld
+{
+    background-color: green;
+    width: 25%;
+    height: 25%;
+    
+    
+
+}
+.nagy4>.sárga
+{
+    background-color: yellow;
+    width: 25%;
+    height: 50%;
+    order: 3;
+    
+}
+.nagy4>.lila
+{
+    background-color: purple;
+    width: 25%;
+    height: 25%;
+    
+}
