@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bejelentkezés</title>
+    <style>
+         body {
+            display: flex;
+            justify-content: center;    
+            align-items: center;        
+            height: 100vh;              
+            font-family: sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        label, input {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        input {
+            padding: 8px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #ures {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <label for="email">E-mail:</label>
+        <input type="text" id="email">
+        <br><br>
+
+        <label for="jelszo">Jelszó:</label>
+        <input type="password" id="jelszo">
+        <br><br>
+
+        <label for="jelszo2">Jelszó újra:</label>
+        <input type="password" id="jelszo2">
+        <br><br>
+
+        <button id="bejel">Bejelentkezés</button>
+        <br><br>
+
+        <div id="ures"></div>
+    </div>
+
+    <script>
+        const bejel = document.getElementById("bejel");
+        const email = document.getElementById("email");
+        const jelszo = document.getElementById("jelszo");
+        const jelszo2 = document.getElementById("jelszo2");
+        const uresdiv = document.getElementById("ures");
+
+        bejel.addEventListener("click", () => {
+            let siker = true;
+            uresdiv.innerHTML = ""; 
+
+            if (!email.value.includes("@") || !email.value.includes(".")) {
+                siker = false;
+                alert("Hibás e-mail cím!");
+            } 
+            else {
+                const pont = email.value.split(".");
+                if (pont[1].length !== 2 && pont[1].length !== 3) {
+                    alert("Hibás e-mail cím!");
+                    siker = false;
+                }
+            }
+
+          
+            if (jelszo.value !== jelszo2.value) {
+                alert("A két jelszó nem egyezik!");
+                siker = false;
+            }
+
+            if (siker) {
+                uresdiv.innerHTML = "Sikeres bejelentkezés!";
+                uresdiv.style.color = "green";
+            }
+
+        });
+    </script>
+</body>
+</html>
