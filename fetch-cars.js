@@ -1,5 +1,11 @@
 import input from "./input.js";
 
+let modell = "";
+let marka = "";
+let ev = "";
+let id = "";
+let szoveg = "";
+
 const valasz = await input("Válasszon(GET, POST, PUT, DELETE,GET by id): ");
 switch(valasz)
 {
@@ -14,11 +20,13 @@ switch(valasz)
                 .then((response) => response.json())
                 .then((json) => console.log(json));
 
+                break;
+
 
     case "POST": 
-                    const modell = await input("Adjon meg egy modellt: ");
-                    const marka = await input("Adjon meg egy márkát: ");
-                    const ev = await input("Adja  meg az évjáratot: ");
+                    modell = await input("Adjon meg egy modellt: ");
+                    marka = await input("Adjon meg egy márkát: ");
+                    ev = await input("Adja  meg az évjáratot: ");
                     
                     fetch("https://surveys-5jvt.onrender.com/api/cars",
                     {   
@@ -39,18 +47,23 @@ switch(valasz)
                     .then((response) => response.json())
                     .then((json) => console.log(json));
 
-    case "PUT":     const modell2 = await input("Adja meg a modellt: ");
-                    const marka2 = await input("Adja meg a márkát: ");
-                    const ev2 = await input("Adja  meg az évjáratot: ");
+                    break;
+
+    case "PUT":     id = await input("Adja meg az id-t: ");
+                    szoveg = "https://surveys-5jvt.onrender.com/api/cars/" + id;
+    
+                    modell = await input("Adja meg a modellt: ");
+                    marka = await input("Adja meg a márkát: ");
+                    ev = await input("Adja  meg az évjáratot: ");
     
                     fetch(szoveg,
                     {   
                         method: 'PUT',
                         body: JSON.stringify(
                             {
-                            model: modell2,
-                            brand: marka2,
-                            year: ev2,
+                            model: modell,
+                            brand: marka,
+                            year: ev,
                             }),
                             headers:
                             {
@@ -62,10 +75,12 @@ switch(valasz)
                         .then((response) => response.json())
                         .then((json) => console.log(json));
 
-    case "DELETE":
-                const id = await input("Adja meg az id-t: ");
+                        break;
 
-                let szoveg = "https://surveys-5jvt.onrender.com/api/cars/" + id;
+    case "DELETE":
+                id = await input("Adja meg az id-t: ");
+
+                szoveg = "https://surveys-5jvt.onrender.com/api/cars/" + id;
 
                 fetch(szoveg,
                     {   
@@ -73,11 +88,13 @@ switch(valasz)
                     })
                     .then((response) => response.json())
                     .then((json) => console.log(json));
+                
+                break;
 
     case "GET by id":
-                    const id2 = await input("Adja meg az id-t: ");
+                    id = await input("Adja meg az id-t: ");
 
-                    let szoveg2 = "https://surveys-5jvt.onrender.com/api/cars/" + id2;
+                    szoveg = "https://surveys-5jvt.onrender.com/api/cars/" + id;
 
                     fetch(szoveg,
                     {   
@@ -86,6 +103,10 @@ switch(valasz)
                     })
                     .then((response) => response.json())
                     .then((json) => console.log(json));
+
+                break;
+    default:
+        console.log("Hiba: Érvénytelen választás!");
 
 
 
