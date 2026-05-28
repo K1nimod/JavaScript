@@ -1,0 +1,21 @@
+{
+  "name": "javascript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "videjoatek.js",
+  "type": "module",
+  "scripts": {
+    "start": "node videjoatek.js",
+    "dev": "nodemon videjoatek.js"
+  },
+  "keywords": [],
+  "author": "Nyilasi Dominik",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^12.10.0",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
