@@ -1,0 +1,20 @@
+{
+  "name": "szamuraj",
+  "version": "1.0.0",
+  "main": "szamuraj.js",
+  "type": "module",
+  "scripts": {
+    "start": "node szamuraj.js",
+    "dev": "nodemon szamuraj.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^12.10.0",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

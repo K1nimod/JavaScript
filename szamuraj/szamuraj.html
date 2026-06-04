@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Szamuráj Felszerelések</title>
+    <style>
+        html { 
+            background-color: #121214; 
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #1a1a1f;
+            color: #e3e3e6;
+            max-width: 1300px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+            border: 1px solid #2d2d35;
+        }
+        h1 { 
+            text-align: center;
+            color: #da2c38; 
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        form { 
+            display: flex; 
+            flex-direction: row; 
+            gap: 12px; 
+            flex-wrap: wrap;
+            background-color: #222229;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #2d2d35;
+        }
+        input, select {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px;
+            border: 1px solid #3a3a45;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: #1a1a1f;
+            color: #ffffff;
+        }
+        ::placeholder {
+            color: #a1a1aa;
+            opacity: 1;
+        }
+        select:invalid {
+            color: #a1a1aa;
+        }
+        select option {
+            color: #ffffff;
+            background-color: #1a1a1f;
+        }
+        .szuro {
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #222229;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 4px solid #d4af37;
+        }
+        .szuro label {
+            font-weight: bold;
+            color: #d4af37;
+        }
+        .szuro select {
+            flex: none;
+            width: 300px;
+            background-color: #1a1a1f;
+        }
+        hr { 
+            border: 0; 
+            height: 1px; 
+            background-color: #2d2d35; 
+            margin: 25px 0; 
+        }
+        
+        ul { 
+            list-style-type: none; 
+            padding: 0; 
+            margin: 0; 
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        li {
+            background-color: #222229;
+            border-top: 4px solid #da2c38; 
+            padding: 0; 
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: calc(33.333% - 14px);
+            box-sizing: border-box;
+            border-bottom: 1px solid #2d2d35;
+            border-left: 1px solid #2d2d35;
+            border-right: 1px solid #2d2d35;
+            transition: transform 0.2s;
+            overflow: hidden; 
+        }
+        li:hover {
+            transform: translateY(-3px);
+        }
+        li img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain; 
+            background-color: #1a1a1f;
+            display: block;
+        }
+        .kartya-tartalom {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+        .gombok {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+        }
+        button {
+            padding: 10px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+        form button { 
+            background-color: #da2c38; 
+            color: white; 
+            font-size: 15px; 
+            padding: 12px 25px; 
+            white-space: nowrap;
+        }
+        form button:hover { 
+            background-color: #b32029; 
+        }
+        .gombok button:nth-of-type(1) { 
+            background-color: #d4af37;
+            color: #121214; 
+            flex: 1;
+        }
+        .gombok button:nth-of-type(1):hover {
+             background-color: #b89324; 
+            }
+        .gombok button:nth-of-type(2) { 
+            background-color: #3a3a45;
+            color: #ff6b6b; 
+            flex: 1;
+            border: 1px solid #ff6b6b33;
+        }
+        .gombok button:nth-of-type(2):hover { 
+            background-color: #da2c38;
+            color: white;
+        }
+
+        @media (max-width: 900px) { li { width: calc(50% - 10px); } }
+        @media (max-width: 600px) { li { width: 100%; } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Szamuráj Felszerelések</h1>
+
+        <form id="ujEszkoz">
+           <input type="text" id="name" placeholder="Név" required>
+           <select id="type" required>
+                <option value="" disabled selected hidden>Fajta</option>
+                <option value="Fegyver">Fegyver</option>
+                <option value="Páncél">Páncél</option>
+                <option value="Kiegészítő">Kiegészítő</option>
+            </select>
+            <input type="number" id="price" placeholder="Ár(Ft)" required>
+            <input type="text" id="material" placeholder="Anyag" required>
+            <input type="url" id="image_url" placeholder="Kép" required>
+            <button type="button" onclick="mentes()">Mentés</button>
+        </form>
+
+        <hr>
+
+        <div class="szuro">
+            <label for="fajtaSzuro">Szűrés fajta szerint:</label>
+            <select id="fajtaSzuro" onchange="szures()">
+                <option value="mind">Összes fajta</option>
+                <option value="Fegyver">Fegyver</option>
+                <option value="Páncél">Páncél</option>
+                <option value="Kiegészítő">Kiegészítő</option>
+            </select>
+        </div>
+
+        <ul id="lista"></ul>
+    </div>
+
+    <script>
+        let felszerelesek = [];
+        let szerkesztendoId = null;
+
+        function betolt() {
+            fetch('/items')
+                .then(valasz => valasz.json())
+                .then(adatok => {
+                    felszerelesek = adatok;
+                    szures();
+                });
+        }
+
+        function szures() {
+            const lista = document.getElementById('lista');
+            const kivalasztott = document.getElementById('fajtaSzuro').value;
+            lista.innerHTML = '';
+
+            felszerelesek.forEach(item => {
+                if (kivalasztott === 'mind' || item.type === kivalasztott) {
+                    lista.innerHTML += `
+                        <li>
+                            <img src="${item.image_url}" alt="${item.name}">
+                            <div class="kartya-tartalom">
+                                <strong style="font-size: 18px; color: #ffffff;">${item.name}</strong>
+                                <div>
+                                    <span style="font-size: 14px; color: #a1a1aa; display: inline-block; margin-top: 5px;">Fajta: ${item.type}</span><br>
+                                    <span style="font-size: 14px; color: #a1a1aa;">Anyag: ${item.material}</span>
+                                </div>
+                                <strong style="color: #d4af37; font-size: 18px; display: inline-block; margin-top: 8px;">${item.price.toLocaleString()} Ft</strong>
+                                <div class="gombok">
+                                    <button onclick="szerkeszt(${item.id})">Módosítás</button>
+                                    <button onclick="torol(${item.id})">Törlés</button>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                }
+            });
+        }
+
+        function szerkeszt(id) {
+            const item = felszerelesek.find(f => f.id === id);
+            if (item) {
+                szerkesztendoId = id;
+                document.getElementById('name').value = item.name;
+                document.getElementById('type').value = item.type;
+                document.getElementById('price').value = item.price;
+                document.getElementById('material').value = item.material;
+                document.getElementById('image_url').value = item.image_url;
+            }
+        }
+
+        function mentes() {
+            const adat = {
+                name: document.getElementById('name').value,
+                type: document.getElementById('type').value,
+                price: parseInt(document.getElementById('price').value),
+                material: document.getElementById('material').value,
+                image_url: document.getElementById('image_url').value
+            };
+
+            if (!adat.name || !adat.type || !adat.price || !adat.material || !adat.image_url) {
+                alert("Kérlek, tölts ki minden mezőt!");
+                return;
+            }
+
+            let url = szerkesztendoId ? '/items/' + szerkesztendoId : '/items';
+            let method = szerkesztendoId ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(adat)
+            }).then(() => {
+                document.getElementById('ujEszkoz').reset();
+                szerkesztendoId = null;
+                betolt();
+            });
+        }
+
+        function torol(id) {
+            fetch('/items/' + id, { method: 'DELETE' })
+                .then(() => betolt());
+        }
+
+        betolt();
+    </script>
+</body>
+</html>
