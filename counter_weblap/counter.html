@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="counter.css">
+    <title>Counter</title>
+</head>
+<body>
+
+    <header>Counter</header>
+
+    <main>
+        <div class="label">Counter value:</div>
+        <div id="counter-value">0</div>
+
+        <div class="buttons">
+            <button class="small" onclick="updateCounter(-1)">−</button>
+            <button class="small" onclick="updateCounter(1)">+</button>
+        </div>
+
+        <div class="buttons">
+            <button class="large" onclick="updateCounter(-10)">-10</button>
+            <button class="large" onclick="updateCounter(10)">+10</button>
+        </div>
+    </main>
+
+    <script>
+        let count = 0;
+
+        function updateCounter(amount) {
+            count += amount;
+            document.getElementById("counter-value").textContent = count;
+        }
+    </script>
+
+</body>
+</html>
