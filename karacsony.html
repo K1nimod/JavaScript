@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evergreen – Karácsonyi Webshop</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+    --evergreen: #1b4332;
+    --evergreen-dark: #122e22;
+    --evergreen-light: #2d6a4f;
+    --gold: #c59b5f;
+    --gold-light: #e6c68f;
+    --gold-soft: #f5efe6;
+    --bg-cream: #f7f5f0;
+    --text-dark: #1f2421;
+    --text-muted: #6c757d;
+    --border-soft: #e6e2d8;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-cream);
+    color: var(--text-dark);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
+}
+
+h1, h2, .navbar-brand, footer h4 {
+    font-family: 'Playfair Display', serif;
+}
+
+/* Hóesés vászon */
+#snowCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+    transition: opacity 0.4s ease;
+}
+
+/* Visszaszámláló sáv */
+.visszaszamlalo {
+    background: linear-gradient(90deg, var(--evergreen-dark), var(--evergreen), var(--evergreen-dark));
+    color: white;
+    padding: 10px 0;
+    font-size: 13px;
+}
+
+.visszaszamlalo-cim {
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    color: #e2ebe5;
+}
+
+.visszaszamlalo-dobozok {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.ido-egyseg {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.ido-egyseg small {
+    font-weight: 400;
+    font-size: 10px;
+    opacity: 0.85;
+    margin-left: 2px;
+}
+
+.szallitas-info {
+    font-size: 12px;
+    color: #e2ebe5;
+}
+
+/* Navigáció */
+.navbar {
+    background-color: rgba(247, 245, 240, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border-soft);
+    transition: box-shadow 0.3s ease;
+}
+
+.navbar.scrolled {
+    box-shadow: 0 8px 28px rgba(18, 46, 34, 0.07);
+}
+
+.navbar-brand {
+    font-size: 25px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--evergreen) !important;
+}
+
+.navbar-brand span {
+    color: var(--gold);
+}
+
+.nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 500;
+    font-size: 14px;
+    margin: 0 10px;
+    position: relative;
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+    width: 0;
+    height: 2px;
+    background-color: var(--gold);
+    transition: width 0.25s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.btn-icon-nav {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border-soft);
+    background: white;
+    color: var(--evergreen);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-icon-nav:hover,
+.btn-icon-nav.active {
+    background: var(--evergreen);
+    color: white;
+    border-color: var(--evergreen);
+}
+
+.btn-kosar {
+    background-color: var(--evergreen);
+    color: white;
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.25s ease;
+}
+
+.btn-kosar:hover {
+    background-color: var(--evergreen-dark);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.kosar-jelveny {
+    background-color: var(--gold);
+    color: #122e22;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 1px 8px;
+    border-radius: 20px;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.kosar-jelveny.pulse {
+    transform: scale(1.35);
+}
+
+/* Felirat & Gombok */
+.felirat {
+    display: inline-block;
+    color: var(--gold-light);
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.modal .felirat {
+    color: var(--gold);
+}
+
+.btn-success {
+    background-color: var(--evergreen);
+    border-color: var(--evergreen);
+}
+
+.btn-success:hover {
+    background-color: var(--evergreen-dark);
+    border-color: var(--evergreen-dark);
+}
+
+/* Kompakt kollekció fejléc */
+.kollekcio-fejlec {
+    background: radial-gradient(circle at top right, rgba(197, 155, 95, 0.22), transparent 55%),
+                linear-gradient(135deg, var(--evergreen-dark), var(--evergreen));
+    color: white;
+    padding: 28px 32px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 14px 32px rgba(18, 46, 34, 0.14);
+    position: relative;
+    overflow: hidden;
+}
+
+.kollekcio-fejlec h2 {
+    color: white;
+    font-size: 32px;
+    margin: 4px 0 6px;
+}
+
+.kollekcio-alcim {
+    color: #d6e2da;
+    font-size: 14px;
+}
+
+.btn-ajandekotlet {
+    background: var(--gold);
+    color: var(--evergreen-dark);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 9px 18px;
+    border-radius: 50px;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-ajandekotlet:hover {
+    background: var(--gold-light);
+    color: var(--evergreen-dark);
+    transform: translateY(-1px);
+}
+
+.talalat-jelveny {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e8efe9;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 50px;
+}
+
+/* Egységes szűrőpanel */
+.szuro-panel {
+    background: white;
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 18px rgba(18, 46, 34, 0.04);
+}
+
+.kategoria-gombok {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.kat-pill {
+    background: var(--bg-cream);
+    border: 1px solid transparent;
+    color: var(--text-dark);
+    padding: 7px 16px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.kat-pill:hover {
+    border-color: var(--evergreen);
+    color: var(--evergreen);
+    background: white;
+}
+
+.kat-pill.active {
+    background: var(--evergreen);
+    border-color: var(--evergreen);
+    color: white;
+}
+
+/* Kereső és szűrők */
+.form-control,
+.form-select,
+.input-group-text {
+    background-color: var(--bg-cream);
+    padding: 10px 14px;
+    border-color: var(--border-soft);
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: white;
+    border-color: var(--evergreen);
+    box-shadow: 0 0 0 0.2rem rgba(27, 67, 50, 0.12);
+}
+
+/* Termékkártyák */
+.card {
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    background-color: white;
+    box-shadow: 0 4px 14px rgba(18, 46, 34, 0.03);
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    border-color: #d6cfc0;
+    box-shadow: 0 18px 36px rgba(18, 46, 34, 0.1);
+}
+
+.card-img-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background-color: #ece8df;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.card-img-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(18, 46, 34, 0.32) 0%, transparent 45%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.card:hover .card-img-wrap::after {
+    opacity: 1;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    cursor: pointer;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.06);
+}
+
+.kat-cimke {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(6px);
+    color: var(--evergreen);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.kedvenc-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.94);
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.kedvenc-btn:hover {
+    transform: scale(1.1);
+    color: #dc3545;
+}
+
+.kedvenc-btn.aktiv {
+    color: #dc3545;
+    background: #fff0f1;
+}
+
+.gyorsnezet-jel {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--evergreen-dark);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 50px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.card:hover .gyorsnezet-jel {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.card-body {
+    padding: 18px 20px 20px;
+}
+
+.card-body h5 {
+    color: var(--evergreen);
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.card-body p {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 40px;
+}
+
+.termek-also {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #f1efe9;
+}
+
+.termek-also strong {
+    color: var(--text-dark);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.termek-also .btn {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-success {
+    color: var(--evergreen);
+    border-color: var(--evergreen);
+}
+
+.btn-outline-success:hover {
+    background-color: var(--evergreen);
+    border-color: var(--evergreen);
+    color: white;
+}
+
+/* Scroll Reveal animáció */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Toast értesítés */
+.toast {
+    background: white;
+    border-radius: 12px;
+    border-left: 4px solid var(--evergreen) !important;
+}
+
+.toast-ikon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #e8f3ee;
+    color: var(--evergreen);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+/* Kosár modal */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.14);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--border-soft);
+    padding: 18px 24px;
+}
+
+.modal-title {
+    color: var(--evergreen);
+    font-weight: 700;
+}
+
+.szallitas-sav-doboz {
+    background: var(--gold-soft);
+    padding: 12px 16px;
+    border-radius: 10px;
+    color: var(--evergreen-dark);
+}
+
+#kosarTartalom {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+.kosar-tetel-kep {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+#vegosszeg {
+    color: var(--evergreen);
+    font-size: 22px;
+}
+
+/* Vissza a tetejére gomb */
+#felGomb {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--evergreen);
+    color: white;
+    border: none;
+    box-shadow: 0 6px 18px rgba(27, 67, 50, 0.25);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.25s ease;
+    z-index: 1000;
+}
+
+#felGomb.lathato {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Lábléc */
+footer {
+    background-color: var(--evergreen-dark);
+    color: white;
+    padding: 48px 0;
+    margin-top: 80px;
+}
+
+footer h4 {
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+}
+
+footer h4 span {
+    color: var(--gold);
+}
+
+footer p {
+    color: #d0d9d2;
+    font-size: 13px;
+}
+
+.footer-link {
+    color: #e2ebe5;
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+}
+
+.footer-link:hover {
+    color: var(--gold);
+}
+
+/* Reszponzív igazítások */
+@media (max-width: 768px) {
+    .kollekcio-fejlec {
+        padding: 22px 20px;
+    }
+
+    .kollekcio-fejlec h2 {
+        font-size: 26px;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <!-- Finom hóesés háttér-animáció -->
+    <canvas id="snowCanvas" aria-hidden="true"></canvas>
+
+    <!-- Ünnepi visszaszámláló sáv -->
+    <section class="visszaszamlalo">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-stars text-warning"></i>
+                <span class="visszaszamlalo-cim">KARÁCSONYIG HÁTRALÉVŐ IDŐ</span>
+            </div>
+            <div id="ido" class="visszaszamlalo-dobozok">Betöltés...</div>
+            <div class="d-none d-lg-block szallitas-info">
+                <i class="bi bi-truck me-1"></i> Ingyenes szállítás 20 000 Ft felett
+            </div>
+        </div>
+    </section>
+
+    <!-- Ragadós (sticky) üveghatású navigáció -->
+    <nav class="navbar navbar-expand-lg sticky-top" id="foNav">
+        <div class="container">
+            <a class="navbar-brand" href="#">EVERGREEN<span>.</span></a>
+
+            <div class="d-flex align-items-center gap-2 order-lg-3">
+                <button class="btn btn-icon-nav" id="snowToggle" title="Hóesés ki/be" aria-label="Hóesés kapcsoló">
+                    <i class="bi bi-snow2"></i>
+                </button>
+
+                <button class="btn btn-kosar position-relative" onclick="kosarMegnyit()">
+                    <i class="bi bi-bag-heart me-1"></i>
+                    <span>Kosár</span>
+                    <span class="kosar-jelveny" id="kosar">0</span>
+                </button>
+
+                <button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse order-lg-2" id="menu">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Főoldal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#termekek">Kínálatunk</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#kapcsolat">Kapcsolat</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Termékek szekció -->
+    <main class="container pt-4 pb-5" id="termekek">
+
+        <!-- Kompakt, elegáns kollekció fejléc -->
+        <div class="kollekcio-fejlec reveal">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 position-relative z-1">
+                <div>
+                    <span class="felirat">KARÁCSONYI KOLLEKCIÓ 2026</span>
+                    <h2>Karácsonyi kínálatunk</h2>
+                    <p class="kollekcio-alcim mb-0">Válogatott ünnepi dekorációk, kézműves ajándékok és meghitt téli kiegészítők.</p>
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <button class="btn btn-ajandekotlet" onclick="veletlenAjandek()">
+                        <i class="bi bi-gift me-1"></i> Ajándékötlet nekem
+                    </button>
+                    <span id="talalatSzamlalo" class="talalat-jelveny">20 termék megjelenítve</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Egységes szűrő- és kategória panel -->
+        <div class="szuro-panel mb-4 reveal">
+            <div class="kategoria-gombok mb-3" id="kategoriaGombok">
+                <button type="button" class="kat-pill active" data-kat="">Összes</button>
+                <button type="button" class="kat-pill" data-kat="dekoráció">Dekoráció</button>
+                <button type="button" class="kat-pill" data-kat="ajándék">Ajándék</button>
+                <button type="button" class="kat-pill" data-kat="kiegészítő">Kiegészítő</button>
+                <button type="button" class="kat-pill" data-kat="világítás">Világítás</button>
+                <button type="button" class="kat-pill" data-kat="édesség">Édesség</button>
+                <button type="button" class="kat-pill" data-kat="ruházat">Ruházat</button>
+                <button type="button" class="kat-pill" data-kat="csomagolás">Csomagolás</button>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" id="kereses" class="form-control border-start-0" placeholder="Termék keresése név vagy leírás alapján...">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <select id="kategoria" class="form-select">
+                        <option value="">Minden kategória</option>
+                        <option value="dekoráció">Dekoráció</option>
+                        <option value="ajándék">Ajándék</option>
+                        <option value="kiegészítő">Kiegészítő</option>
+                        <option value="ruházat">Ruházat</option>
+                        <option value="csomagolás">Csomagolás</option>
+                        <option value="világítás">Világítás</option>
+                        <option value="édesség">Édesség</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <select id="rendezes" class="form-select">
+                        <option value="">Alapértelmezett sorrend</option>
+                        <option value="olcso">Ár szerint növekvő</option>
+                        <option value="draga">Ár szerint csökkenő</option>
+                        <option value="nev">Név szerint (A–Z)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Termékkártyák (20 termék – hangulatos, valódi fotókkal) -->
+        <div class="row g-4" id="termekLista">
+
+            <!-- 1 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Karácsonyfa" data-kategoria="dekoráció" data-ar="15990">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">DEKORÁCIÓ</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=aesthetic+decorated+christmas+tree+warm+lights+cozy+room&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="christmas,tree" class="card-img-top" alt="Karácsonyfa" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Karácsonyfa</h5>
+                        <p>Dús ágú, élethű műfenyő meleg ünnepi hangulathoz.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>15 990 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Karácsonyfa', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Ajándékcsomag" data-kategoria="ajándék" data-ar="4990">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">AJÁNDÉK</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=wrapped+christmas+presents+red+ribbon+under+tree&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="christmas,gift" class="card-img-top" alt="Ajándékcsomag" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Ajándékcsomag</h5>
+                        <p>Gondosan összeállított, masnival átkötött meglepetés.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>4 990 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Ajándékcsomag', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Karácsonyi díszek" data-kategoria="dekoráció" data-ar="2490">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">DEKORÁCIÓ</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=red+and+gold+christmas+bauble+ornaments+on+tree&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="christmas,ornament" class="card-img-top" alt="Karácsonyi díszek" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Karácsonyi díszek</h5>
+                        <p>Klasszikus piros és arany gömbdíszek a karácsonyfára.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>2 490 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Karácsonyi díszek', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Illatos gyertya" data-kategoria="kiegészítő" data-ar="1990">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">KIEGÉSZÍTŐ</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=amber+glass+scented+candle+cinnamon+christmas+cozy&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="scented,candle" class="card-img-top" alt="Illatos gyertya" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Illatos gyertya</h5>
+                        <p>Fahéjas-narancsos, meghitt fényű üveggyertya.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>1 990 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Illatos gyertya', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Mikulás figura" data-kategoria="dekoráció" data-ar="3490">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">DEKORÁCIÓ</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=traditional+santa+claus+figurine+christmas+decor+warm+lights&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="santa,figurine" class="card-img-top" alt="Mikulás figura" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Mikulás figura</h5>
+                        <p>Részletgazdag, ünnepi Mikulás lakásdekoráció.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>3 490 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Mikulás figura', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Karácsonyi zokni" data-kategoria="ruházat" data-ar="1490">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">RUHÁZAT</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=red+knitted+christmas+stockings+hanging+cozy&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="christmas,stocking" class="card-img-top" alt="Karácsonyi zokni" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Karácsonyi zokni</h5>
+                        <p>Puha, kötött ünnepi zokni kandallóra vagy ajándékba.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>1 490 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Karácsonyi zokni', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Díszdoboz" data-kategoria="csomagolás" data-ar="990">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">CSOMAGOLÁS</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=aesthetic+christmas+gift+boxes+gold+ribbon+wood&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="gift,box" class="card-img-top" alt="Díszdoboz" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Díszdoboz</h5>
+                        <p>Elegáns, szalaggal díszített doboz ajándékaidhoz.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>990 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Díszdoboz', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="LED fényfüzér" data-kategoria="világítás" data-ar="3990">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">VILÁGÍTÁS</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=warm+white+led+fairy+lights+christmas+cozy+bokeh&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="fairy,lights" class="card-img-top" alt="LED fényfüzér" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>LED fényfüzér</h5>
+                        <p>Melegfehér fényű, hangulatos ünnepi fényfüzér.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>3 990 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('LED fényfüzér', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Mézeskalács" data-kategoria="édesség" data-ar="1290">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">ÉDESSÉG</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=decorated+gingerbread+cookies+christmas+table+cozy&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="gingerbread,cookies" class="card-img-top" alt="Mézeskalács" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Mézeskalács</h5>
+                        <p>Kézzel díszített, fűszeres hagyományos mézeskalács.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>1 290 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Mézeskalács', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Karácsonyi bögre" data-kategoria="kiegészítő" data-ar="2190">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">KIEGÉSZÍTŐ</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=cozy+christmas+ceramic+mug+hot+drink+cinnamon&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="christmas,mug" class="card-img-top" alt="Karácsonyi bögre" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Karácsonyi bögre</h5>
+                        <p>Kézműves kerámiabögre forró csokihoz és téli teákhoz.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>2 190 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Karácsonyi bögre', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 11 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Karácsonyi hógömb" data-kategoria="dekoráció" data-ar="3290">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">DEKORÁCIÓ</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=christmas+glass+snow+globe+warm+bokeh+lights&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="snow,globe" class="card-img-top" alt="Karácsonyi hógömb" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Karácsonyi hógömb</h5>
+                        <p>Klasszikus üveg hógömb téli fenyőerdő jelenettel.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>3 290 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Karácsonyi hógömb', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 12 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Karácsonyi könyv" data-kategoria="ajándék" data-ar="4490">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">AJÁNDÉK</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=cozy+hardcover+book+christmas+lights+blanket&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="christmas,book" class="card-img-top" alt="Karácsonyi könyv" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Karácsonyi könyv</h5>
+                        <p>Meghitt ünnepi történetek bekuckózós téli estékre.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>4 490 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Karácsonyi könyv', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 13 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Adventi koszorú" data-kategoria="dekoráció" data-ar="5490">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">DEKORÁCIÓ</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=natural+pine+advent+wreath+four+candles+christmas&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="advent,wreath" class="card-img-top" alt="Adventi koszorú" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Adventi koszorú</h5>
+                        <p>Természetes fenyőágakból és tobozokból kötött koszorú.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>5 490 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Adventi koszorú', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 14 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Ünnepi csillaglámpás" data-kategoria="világítás" data-ar="4290">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">VILÁGÍTÁS</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=glowing+christmas+paper+star+lantern+window&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="star,lantern" class="card-img-top" alt="Ünnepi csillaglámpás" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Ünnepi csillaglámpás</h5>
+                        <p>Meleg fényt árasztó, ablakba akasztható díszlámpás.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>4 290 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Ünnepi csillaglámpás', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 15 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Forró csokoládé szett" data-kategoria="édesség" data-ar="2490">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">ÉDESSÉG</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=hot+chocolate+mug+marshmallows+cinnamon+christmas&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="hot,chocolate" class="card-img-top" alt="Forró csokoládé szett" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Forró csokoládé szett</h5>
+                        <p>Krémes belga csokoládé pillecukorral és fahéjjal.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>2 490 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Forró csokoládé szett', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 16 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Csomagolópapír szett" data-kategoria="csomagolás" data-ar="1590">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">CSOMAGOLÁS</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=brown+kraft+christmas+wrapping+paper+rolls+twine&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="wrapping,paper" class="card-img-top" alt="Csomagolópapír szett" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Csomagolópapír szett</h5>
+                        <p>Natúr kraft csomagolópapír kenderzsineggel és kártyákkal.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>1 590 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Csomagolópapír szett', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 17 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Kötött téli sál" data-kategoria="ruházat" data-ar="3790">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">RUHÁZAT</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=cozy+red+knitted+winter+scarf+pine+cones&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="knitted,scarf" class="card-img-top" alt="Kötött téli sál" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Kötött téli sál</h5>
+                        <p>Extra puha, meleg kötött sál hideg téli sétákhoz.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>3 790 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Kötött téli sál', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 18 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Cukorpálca válogatás" data-kategoria="édesség" data-ar="1190">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">ÉDESSÉG</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=red+white+peppermint+candy+canes+pine+christmas&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="candy,cane" class="card-img-top" alt="Cukorpálca válogatás" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Cukorpálca válogatás</h5>
+                        <p>Borsmentás piros-fehér cukorpálcák fára vagy nassoláshoz.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>1 190 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Cukorpálca válogatás', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 19 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Asztali mini fenyő" data-kategoria="dekoráció" data-ar="4790">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">DEKORÁCIÓ</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=small+potted+mini+christmas+tree+decorated+table&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="mini,christmas,tree" class="card-img-top" alt="Asztali mini fenyő" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Asztali mini fenyő</h5>
+                        <p>Fényekkel és apró díszekkel ékesített asztali fenyőfa.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>4 790 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Asztali mini fenyő', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 20 -->
+            <div class="col-12 col-sm-6 col-lg-3 termek-elem reveal" data-nev="Ajándékutalvány" data-kategoria="ajándék" data-ar="10000">
+                <div class="card h-100">
+                    <div class="card-img-wrap">
+                        <span class="kat-cimke">AJÁNDÉK</span>
+                        <button type="button" class="kedvenc-btn" onclick="kedvencValt(this)" title="Kedvencekhez"><i class="bi bi-heart"></i></button>
+                        <img src="https://tse2.mm.bing.net/th?q=luxury+christmas+envelope+gold+wax+seal+ribbon&w=800&h=600&c=7&rs=1&p=0&dpr=2&pid=1.7" data-tags="gift,card" class="card-img-top" alt="Ajándékutalvány" loading="lazy" onclick="gyorsnezet(this)">
+                        <span class="gyorsnezet-jel"><i class="bi bi-eye me-1"></i>Gyorsnézet</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5>Ajándékutalvány</h5>
+                        <p>Arany pecsétes borítékban átadható Evergreen utalvány.</p>
+                        <div class="termek-also mt-auto">
+                            <strong>10 000 Ft</strong>
+                            <button class="btn btn-outline-success" onclick="kosarba('Ajándékutalvány', this)">
+                                <i class="bi bi-bag-plus me-1"></i>Kosárba
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Nincs találat visszajelzés -->
+        <div id="nincsTalalat" class="text-center py-5" style="display:none;">
+            <i class="bi bi-search fs-1 text-muted d-block mb-2"></i>
+            <h5>Nincs a keresésnek megfelelő termék</h5>
+            <p class="text-muted">Próbálj meg más kulcsszót vagy állítsd vissza a szűrőket.</p>
+            <button class="btn btn-outline-success btn-sm" onclick="szurokTorlese()">Szűrők visszaállítása</button>
+        </div>
+
+    </main>
+
+    <!-- Lábléc -->
+    <footer id="kapcsolat">
+        <div class="container text-center">
+            <h4>EVERGREEN<span>.</span></h4>
+            <p>Karácsonyi hangulat, különleges pillanatok – szeretettel válogatva.</p>
+            <div class="d-flex justify-content-center gap-3 my-3">
+                <a href="#termekek" class="footer-link">Kínálat</a>
+                <span>•</span>
+                <a href="mailto:info@evergreen-shop.hu" class="footer-link">info@evergreen-shop.hu</a>
+            </div>
+            <p class="mb-0 opacity-75">© 2026 Evergreen Webshop. Minden jog fenntartva.</p>
+        </div>
+    </footer>
+
+    <!-- Vissza a tetejére gomb -->
+    <button id="felGomb" title="Vissza a tetejére" aria-label="Vissza a tetejére">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- Nem blokkoló Toast értesítés kosárba helyezéskor -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+        <div id="kosarToast" class="toast align-items-center border-0 shadow-lg" role="alert">
+            <div class="d-flex align-items-center p-3">
+                <div class="toast-ikon me-3">
+                    <i class="bi bi-check2-circle"></i>
+                </div>
+                <div class="toast-body p-0 me-3">
+                    <strong class="d-block text-dark" id="toastTermekNev">Termék</strong>
+                    <small class="text-muted">Sikeresen a kosárba került!</small>
+                </div>
+                <button type="button" class="btn btn-sm btn-success ms-auto text-nowrap" onclick="kosarMegnyit()">Kosár</button>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Termék Gyorsnézet Modal -->
+    <div class="modal fade" id="gyorsnezetModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content overflow-hidden">
+                <div class="row g-0">
+                    <div class="col-md-6">
+                        <img id="gnKep" src="" alt="" class="w-100 h-100 object-fit-cover" style="min-height: 300px;">
+                    </div>
+                    <div class="col-md-6 p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <span class="felirat" id="gnKat">KATEGÓRIA</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <h3 class="mt-2 mb-3" id="gnNev" style="font-family: 'Playfair Display', serif; color: #1b4332;">Termék neve</h3>
+                        <p class="text-muted" id="gnLeiras">Leírás</p>
+                        <div class="my-3">
+                            <span class="fs-4 fw-bold text-dark" id="gnAr">0 Ft</span>
+                            <small class="text-success d-block"><i class="bi bi-check-circle-fill me-1"></i>Raktáron, azonnali szállítással</small>
+                        </div>
+                        <div class="mt-auto d-flex gap-2">
+                            <button type="button" class="btn btn-success w-100" id="gnKosarGomb">
+                                <i class="bi bi-bag-plus me-1"></i> Kosárba teszem
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teljes Bevásárlókosár Modal -->
+    <div class="modal fade" id="teljesKosarModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-bag-heart me-2"></i>Bevásárlókosár</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Dinamikus ingyenes szállítási sáv -->
+                    <div class="szallitas-sav-doboz mb-3">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span id="szallitasSzoveg">Még <strong>20 000 Ft</strong> az ingyenes szállításig!</span>
+                            <span id="szallitasSzazalek">0%</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div id="szallitasProgress" class="progress-bar bg-success" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div id="kosarTartalom"></div>
+
+                    <div id="kosarOsszesito" class="pt-3 mt-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Végösszeg:</span>
+                            <strong id="vegosszeg">0 Ft</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button class="btn btn-outline-danger" id="uritesGomb" onclick="kosarUrites()">
+                        <i class="bi bi-trash3 me-1"></i>Kosár ürítése
+                    </button>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            Vásárlás folytatása
+                        </button>
+                        <button class="btn btn-success" id="rendelesGomb" onclick="rendelesLeadas()">
+                            Megrendelés <i class="bi bi-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let kosar = JSON.parse(localStorage.getItem("evergreen_kosar")) || [];
+const INGYENES_SZALLITAS_HATAR = 20000;
+
+/* 1. Visszaszámlálás karácsonyig */
+function visszaszamlalas() {
+    const karacsony = new Date("2026-12-25T00:00:00").getTime();
+    const most = new Date().getTime();
+    const kulonbseg = karacsony - most;
+
+    const idoElem = document.getElementById("ido");
+    if (!idoElem) return;
+
+    if (kulonbseg <= 0) {
+        idoElem.innerHTML = "<span class='ido-egyseg'>Boldog karácsonyt! 🎄</span>";
+        return;
+    }
+
+    const nap = Math.floor(kulonbseg / (1000 * 60 * 60 * 24));
+    const ora = String(Math.floor((kulonbseg / (1000 * 60 * 60)) % 24)).padStart(2, "0");
+    const perc = String(Math.floor((kulonbseg / (1000 * 60)) % 60)).padStart(2, "0");
+    const masodperc = String(Math.floor((kulonbseg / 1000) % 60)).padStart(2, "0");
+
+    idoElem.innerHTML = `
+        <span class="ido-egyseg">${nap}<small>nap</small></span>
+        <span class="ido-egyseg">${ora}<small>óra</small></span>
+        <span class="ido-egyseg">${perc}<small>perc</small></span>
+        <span class="ido-egyseg">${masodperc}<small>mp</small></span>
+    `;
+}
+
+/* Segédfüggvény az aktuális, valódi termékkép lekéréséhez */
+function termekKepLekeres(nev, alapKep = "") {
+    const kartya = document.querySelector(`#termekLista .termek-elem[data-nev="${nev}"]`);
+    if (kartya) {
+        const img = kartya.querySelector("img");
+        if (img && img.src) return img.src;
+    }
+    return alapKep;
+}
+
+/* 2. Kosárba helyezés dinamikus visszajelzéssel */
+function kosarba(nev, gombElem = null) {
+    const kartyak = document.querySelectorAll("#termekLista .termek-elem");
+    let talaltKartya = null;
+
+    kartyak.forEach((elem) => {
+        if (elem.dataset.nev === nev) {
+            talaltKartya = elem;
+        }
+    });
+
+    if (!talaltKartya) return;
+
+    const ar = parseInt(talaltKartya.dataset.ar, 10);
+    const kep = talaltKartya.querySelector("img").src;
+
+    const letezik = kosar.find((elem) => elem.nev === nev);
+    if (letezik) {
+        letezik.db++;
+        letezik.kep = kep;
+    } else {
+        kosar.push({ nev, ar, kep, db: 1 });
+    }
+
+    kosarFrissit();
+
+    if (gombElem) {
+        const eredetiHtml = gombElem.innerHTML;
+        gombElem.classList.remove("btn-outline-success");
+        gombElem.classList.add("btn-success");
+        gombElem.innerHTML = '<i class="bi bi-check2 me-1"></i>Hozzáadva';
+
+        setTimeout(() => {
+            gombElem.classList.remove("btn-success");
+            gombElem.classList.add("btn-outline-success");
+            gombElem.innerHTML = eredetiHtml;
+        }, 1100);
+    }
+
+    const jelveny = document.getElementById("kosar");
+    jelveny.classList.add("pulse");
+    setTimeout(() => jelveny.classList.remove("pulse"), 300);
+
+    document.getElementById("toastTermekNev").textContent = nev;
+    const toastElem = document.getElementById("kosarToast");
+    const toast = bootstrap.Toast.getOrCreateInstance(toastElem, { delay: 2800 });
+    toast.show();
+}
+
+/* 3. Kosár mentése és frissítése */
+function kosarFrissit() {
+    localStorage.setItem("evergreen_kosar", JSON.stringify(kosar));
+
+    const osszDb = kosar.reduce((osszeg, elem) => osszeg + elem.db, 0);
+    document.getElementById("kosar").textContent = osszDb;
+
+    kosarMegjelenit();
+}
+
+/* 4. Kosár tartalmának kirajzolása + ingyenes szállítási sáv */
+function kosarMegjelenit() {
+    const tartalom = document.getElementById("kosarTartalom");
+    const osszesito = document.getElementById("kosarOsszesito");
+    const uritesGomb = document.getElementById("uritesGomb");
+    const rendelesGomb = document.getElementById("rendelesGomb");
+
+    let vegosszeg = 0;
+    kosar.forEach((elem) => {
+        vegosszeg += elem.ar * elem.db;
+    });
+
+    const szazalek = Math.min(100, Math.round((vegosszeg / INGYENES_SZALLITAS_HATAR) * 100));
+    const hianyzo = Math.max(0, INGYENES_SZALLITAS_HATAR - vegosszeg);
+    document.getElementById("szallitasProgress").style.width = szazalek + "%";
+    document.getElementById("szallitasSzazalek").textContent = szazalek + "%";
+
+    if (hianyzo === 0) {
+        document.getElementById("szallitasSzoveg").innerHTML =
+            '<i class="bi bi-check-circle-fill text-success me-1"></i><strong>Gratulálunk!</strong> Ingyenes kiszállítást szereztél.';
+    } else {
+        document.getElementById("szallitasSzoveg").innerHTML =
+            `Még <strong>${hianyzo.toLocaleString("hu-HU")} Ft</strong> az ingyenes szállításig!`;
+    }
+
+    if (kosar.length === 0) {
+        tartalom.innerHTML = `
+            <div class="text-center py-5">
+                <i class="bi bi-bag text-muted fs-1 d-block mb-2"></i>
+                <p class="text-muted mb-0">A kosarad jelenleg üres.</p>
+            </div>
+        `;
+        osszesito.style.display = "none";
+        uritesGomb.style.display = "none";
+        rendelesGomb.disabled = true;
+        return;
+    }
+
+    osszesito.style.display = "block";
+    uritesGomb.style.display = "inline-block";
+    rendelesGomb.disabled = false;
+    tartalom.innerHTML = "";
+
+    kosar.forEach((elem, index) => {
+        const reszosszeg = elem.ar * elem.db;
+        const aktualisKep = termekKepLekeres(elem.nev, elem.kep);
+        tartalom.innerHTML += `
+            <div class="d-flex justify-content-between align-items-center border-bottom py-3 gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="${aktualisKep}" alt="${elem.nev}" class="kosar-tetel-kep">
+                    <div>
+                        <strong class="d-block">${elem.nev}</strong>
+                        <small class="text-muted">${elem.ar.toLocaleString("hu-HU")} Ft / db</small>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="mennyisegValtoztat(${index}, -1)">-</button>
+                    <span class="px-2 fw-semibold">${elem.db}</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="mennyisegValtoztat(${index}, 1)">+</button>
+                    <span class="ms-2 fw-bold text-nowrap d-none d-sm-inline">${reszosszeg.toLocaleString("hu-HU")} Ft</span>
+                    <button class="btn btn-sm btn-outline-danger ms-1" onclick="termekTorles(${index})" title="Törlés">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+
+    document.getElementById("vegosszeg").textContent = vegosszeg.toLocaleString("hu-HU") + " Ft";
+}
+
+function mennyisegValtoztat(index, ertek) {
+    kosar[index].db += ertek;
+    if (kosar[index].db <= 0) {
+        kosar.splice(index, 1);
+    }
+    kosarFrissit();
+}
+
+function termekTorles(index) {
+    kosar.splice(index, 1);
+    kosarFrissit();
+}
+
+function kosarUrites() {
+    kosar = [];
+    kosarFrissit();
+}
+
+function kosarMegnyit() {
+    kosarMegjelenit();
+    const ablak = bootstrap.Modal.getOrCreateInstance(document.getElementById("teljesKosarModal"));
+    ablak.show();
+}
+
+/* Szimulált rendelésleadás */
+function rendelesLeadas() {
+    if (kosar.length === 0) return;
+
+    const tartalom = document.getElementById("kosarTartalom");
+    tartalom.innerHTML = `
+        <div class="text-center py-5">
+            <div class="mb-3 text-success" style="font-size: 48px;">
+                <i class="bi bi-patch-check-fill"></i>
+            </div>
+            <h4 class="fw-bold" style="color: #1b4332;">Köszönjük a rendelésed!</h4>
+            <p class="text-muted mb-0">Ünnepi csomagodat hamarosan összeállítjuk és útnak indítjuk.</p>
+        </div>
+    `;
+    document.getElementById("kosarOsszesito").style.display = "none";
+    document.getElementById("uritesGomb").style.display = "none";
+    document.getElementById("rendelesGomb").disabled = true;
+
+    kosar = [];
+    localStorage.removeItem("evergreen_kosar");
+    document.getElementById("kosar").textContent = "0";
+}
+
+/* 5. Termék Gyorsnézet és Véletlen ajándékötlet */
+function gyorsnezet(kepElem) {
+    const kartya = kepElem.closest(".termek-elem");
+    const nev = kartya.dataset.nev;
+    const kat = kartya.dataset.kategoria;
+    const ar = parseInt(kartya.dataset.ar, 10);
+    const leiras = kartya.querySelector("p").textContent;
+    const kep = kepElem.src;
+
+    document.getElementById("gnKep").src = kep;
+    document.getElementById("gnKep").alt = nev;
+    document.getElementById("gnKat").textContent = kat.toUpperCase();
+    document.getElementById("gnNev").textContent = nev;
+    document.getElementById("gnLeiras").textContent = leiras;
+    document.getElementById("gnAr").textContent = ar.toLocaleString("hu-HU") + " Ft";
+
+    const gomb = document.getElementById("gnKosarGomb");
+    gomb.onclick = function () {
+        kosarba(nev);
+        bootstrap.Modal.getInstance(document.getElementById("gyorsnezetModal")).hide();
+    };
+
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("gyorsnezetModal"));
+    modal.show();
+}
+
+function veletlenAjandek() {
+    const kartyak = document.querySelectorAll("#termekLista .termek-elem");
+    const veletlen = kartyak[Math.floor(Math.random() * kartyak.length)];
+    gyorsnezet(veletlen.querySelector("img"));
+}
+
+/* 6. Kedvencek gomb */
+function kedvencValt(gomb) {
+    gomb.classList.toggle("aktiv");
+    const ikon = gomb.querySelector("i");
+    if (gomb.classList.contains("aktiv")) {
+        ikon.classList.remove("bi-heart");
+        ikon.classList.add("bi-heart-fill");
+    } else {
+        ikon.classList.remove("bi-heart-fill");
+        ikon.classList.add("bi-heart");
+    }
+}
+
+/* 7. Keresés, kategória-szűrés és rendezés */
+function termekSzures() {
+    const kereses = document.getElementById("kereses").value.toLowerCase().trim();
+    const kategoria = document.getElementById("kategoria").value.toLowerCase();
+    const kartyak = document.querySelectorAll("#termekLista > .termek-elem");
+
+    let lathatoDb = 0;
+
+    kartyak.forEach((elem) => {
+        const nev = elem.dataset.nev.toLowerCase();
+        const leiras = elem.querySelector("p").textContent.toLowerCase();
+        const kat = elem.dataset.kategoria.toLowerCase();
+
+        const egyezikSzoveg = nev.includes(kereses) || leiras.includes(kereses);
+        const egyezikKat = kategoria === "" || kat === kategoria;
+
+        if (egyezikSzoveg && egyezikKat) {
+            elem.style.display = "";
+            lathatoDb++;
+        } else {
+            elem.style.display = "none";
+        }
+    });
+
+    document.getElementById("talalatSzamlalo").textContent = `${lathatoDb} termék megjelenítve`;
+    document.getElementById("nincsTalalat").style.display = lathatoDb > 0 ? "none" : "block";
+
+    document.querySelectorAll(".kat-pill").forEach((pill) => {
+        pill.classList.toggle("active", pill.dataset.kat === kategoria);
+    });
+}
+
+function termekRendezes() {
+    const rendezes = document.getElementById("rendezes").value;
+    const lista = document.getElementById("termekLista");
+    const kartyak = Array.from(lista.children);
+
+    kartyak.sort((a, b) => {
+        const nevA = a.dataset.nev;
+        const nevB = b.dataset.nev;
+        const arA = parseInt(a.dataset.ar, 10);
+        const arB = parseInt(b.dataset.ar, 10);
+
+        if (rendezes === "olcso") return arA - arB;
+        if (rendezes === "draga") return arB - arA;
+        if (rendezes === "nev") return nevA.localeCompare(nevB, "hu");
+        return 0;
+    });
+
+    kartyak.forEach((elem) => lista.appendChild(elem));
+    termekSzures();
+}
+
+function szurokTorlese() {
+    document.getElementById("kereses").value = "";
+    document.getElementById("kategoria").value = "";
+    document.getElementById("rendezes").value = "";
+    termekSzures();
+}
+
+/* 8. Finom hóesés animáció (Canvas) */
+function hoInditas() {
+    const canvas = document.getElementById("snowCanvas");
+    const ctx = canvas.getContext("2d");
+    let hoAktiv = true;
+
+    function meretez() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    meretez();
+    window.addEventListener("resize", meretez);
+
+    const pelyhek = Array.from({ length: 45 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2.5 + 1.2,
+        speedY: Math.random() * 0.8 + 0.35,
+        speedX: Math.random() * 0.6 - 0.3
+    }));
+
+    function rajzol() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (hoAktiv) {
+            ctx.fillStyle = "rgba(197, 155, 95, 0.42)";
+            ctx.beginPath();
+            pelyhek.forEach((p) => {
+                ctx.moveTo(p.x, p.y);
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                p.y += p.speedY;
+                p.x += p.speedX;
+
+                if (p.y > canvas.height) {
+                    p.y = -5;
+                    p.x = Math.random() * canvas.width;
+                }
+                if (p.x > canvas.width) p.x = 0;
+                if (p.x < 0) p.x = canvas.width;
+            });
+            ctx.fill();
+        }
+        requestAnimationFrame(rajzol);
+    }
+    rajzol();
+
+    const toggleGomb = document.getElementById("snowToggle");
+    toggleGomb.classList.add("active");
+    toggleGomb.addEventListener("click", () => {
+        hoAktiv = !hoAktiv;
+        toggleGomb.classList.toggle("active", hoAktiv);
+        canvas.style.opacity = hoAktiv ? "1" : "0";
+    });
+}
+
+/* 9. Inicializálás */
+document.addEventListener("DOMContentLoaded", () => {
+    visszaszamlalas();
+    setInterval(visszaszamlalas, 1000);
+    kosarFrissit();
+    hoInditas();
+
+    document.getElementById("kereses").addEventListener("input", termekSzures);
+    document.getElementById("kategoria").addEventListener("change", termekSzures);
+    document.getElementById("rendezes").addEventListener("change", termekRendezes);
+
+    document.querySelectorAll(".kat-pill").forEach((pill) => {
+        pill.addEventListener("click", () => {
+            document.getElementById("kategoria").value = pill.dataset.kat;
+            termekSzures();
+        });
+    });
+
+    // Ha az elsődleges képszerver nem elérhető, valódi fotót tölt be a termék kulcsszavaival
+    document.querySelectorAll(".card-img-top").forEach((img, idx) => {
+        img.addEventListener("error", function () {
+            if (this.dataset.fallback) return;
+            this.dataset.fallback = "1";
+            const tags = this.dataset.tags || "christmas";
+            this.src = `https://loremflickr.com/600/450/${tags}/all?lock=${idx + 15}`;
+        });
+    });
+
+    // Scroll Reveal (IntersectionObserver)
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        { threshold: 0.1 }
+    );
+    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+    // Navigáció árnyék + Vissza a tetejére gomb
+    const nav = document.getElementById("foNav");
+    const felGomb = document.getElementById("felGomb");
+
+    window.addEventListener("scroll", () => {
+        nav.classList.toggle("scrolled", window.scrollY > 30);
+        felGomb.classList.toggle("lathato", window.scrollY > 400);
+    });
+
+    felGomb.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+});
+    </script>
+
+</body>
+</html>
