@@ -1,0 +1,17 @@
+{
+  "name": "cars-projekt",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "cars.js",
+  "scripts": {
+    "dev": "nodemon cars.js",
+    "start": "node cars.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.2.0",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
